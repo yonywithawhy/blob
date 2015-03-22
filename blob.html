@@ -9,9 +9,25 @@
 			  document.getElementsByTagName('head')[0].appendChild(jq);
 			}
 		</script>
+		<script type="text/javascript" src="angularjs.1.2.17.min.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
 		<style type="text/css">
+			code{
+				font-family: Monaco, monospace;
+				background-color: #fbfaf8;
+				padding: 5px;
+				margin: 5px;
+				word-break: normal;
+				border-radius: 4px;
+				border-color: #000000;
+				color: #ccc;
+				font-size: 16px;
+				vertical-align: top;
+				display: block;
+				width: 100%;
+				height: auto;	
+			}
 			#torso {
 				width:90%;
 				height: 500px;
@@ -50,12 +66,18 @@
 				line-height: 24px;
 				font-size: 24px;
 				white-space: nowrap;
+				cursor: default;
+				opacity: 1;
 			}
 			.dot img {
 				width: 25px;
 			}
 			.dot .show-later{
 				display: none;
+			}
+			.dot.hover{
+				opacity: 0.5;
+				cursor: pointer;
 			}
 			#dottop {
 				left:102px;
@@ -77,11 +99,10 @@
 			$('document').ready(function(){
 				$('#set').fadeIn(1000,function(){});
 				
-				$('#set').click(function(){
+				$('#set').bind("click.startup",function(){
 					var percent = .005;
 					var distance = (percent*$(this).parent().width())
 					var speed = 1000;
-					
 
 					$(this).animate({left:distance},speed);
 					$('#dotleft').animate({left:'250px'},speed);
@@ -89,34 +110,67 @@
 					$('#dottop').animate({left:'250px',top:'140px'},speed);
 					$(this).css({cursor:'default'});
 					
-					$('.dot').mouseenter(function(){$(this).css({cursor:'pointer',opacity:.5})})
-					.mouseleave(function(){$(this).css({cursor:'pointer',opacity:1})});
 					
 					$('.show-later').fadeIn(1000,function(){});
+					$('#set').unbind('click.startup');
 					
+					//$scope.conditionalClass = true; 					
 				});
+				
 			});
 
 		</script>
+		<script type="text/javascript">
+			var app = angular.module("Blob",[]);
+			app.controller("c_Section",function($scope){
+				$scope.sections = [
+					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",showing:false},
+					{region:"dotleft",header:"What I Do",showing:false},
+					{region:"dotright",header:"How to Reach Me",showing:false}
+				];
+				
+				$scope.hoveredIndex = -1;
+				$scope.preview = function(ind){
+					$scope.hoveredIndex = ind;
+				}
+				
+				$scope.selectedIndex = -1;
+				$scope.toggleView = function(ind){
+					//open with animation or close with animation
+					if(ind >= 0){
+						alert("for ind "+ind+" old showing? "+$scope.sections[ind].showing);
+						$scope.sections[ind].showing = !$scope.sections[ind].showing;
+					}else{
+						alert("ind is "+ind);
+					}
+				}
+				
+			});
+		</script>
 	</head>
-	<body>
+	<body ng-app="Blob">
 		<div id="torso">
-			<div id="set">
-				<div class="dot" id="dottop">
-					<img src="ydldot.png"/>
-					<span class="show-later">Who I Am</span>
+			<div id="set" ng-controller="c_Section">
+				<div ng-repeat="s in sections"
+					 class="dot"
+					 ng-class="{hover: $index==hoveredIndex}"
+					 id="{{s.region}}"
+					 ng-mouseenter="preview($index)"
+					 ng-mouseleave="preview(-1)"
+					 ng-click="toggleView($index)">
+						 <img src="ydldot.png"/>
+						 <span class="show-later">{{s.header}}</span>
+						 <br/>
+						 <div class="show-even-later"
+						 id="{{s.region+'-show-even-later'}}"
+						 ng-show="{{s.showing}}"
+						 >
+						 	{{s.content}}
+						 </div>
 				</div>
 				<div id="ydl">
 					<img src="ydl.png"/><br/>
 					<p>Yonatan David Laurence</p>
-				</div>
-				<div class="dot" id="dotleft">
-					<img src="ydldot.png"/>
-					<span class="show-later">What I Do</span>
-				</div>
-				<div class="dot" id="dotright">
-					<img src="ydldot.png"/>
-					<span class="show-later">How to Reach Me</span>
 				</div>
 			</div>
 		</div>

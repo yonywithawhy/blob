@@ -23,6 +23,7 @@
 				//border: 1px solid green;
 				display: none;
 				opacity: 0.8;
+				cursor: pointer;
 			}
 			#ydl {
 				position: absolute;
@@ -74,10 +75,12 @@
 					var speed = 1000;
 					
 
+					$(this).animate({left:distance},speed);
 					$('#dotleft').animate({right:'-50px'},speed);
 					$('#dotright').animate({right:'-50px',top:'320px'},speed);
 					$('#dottop').animate({right:'-50px',top:'140px'},speed);
-					$(this).animate({left:distance},speed);
+					$(this).css({cursor:'default'});
+					
 				});
 			});
 

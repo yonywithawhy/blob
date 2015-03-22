@@ -86,7 +86,6 @@
 			}
 			.dot.already-shown.hidden{
 				opacity: 0;
-				//top:0px;
 			}
 
 			.show-even-later{
@@ -112,21 +111,6 @@
 				top:380px;
 				
 			}
-			@keyframes moveUp
-            {
-	            from {left: 480px;} 
-	            to{left:20px;} 
-            }
-            @-moz-keyframes moveUp
-            {
-	            from {left: 480px;} 
-	            to{left:20px;} 
-            }
-            @-webkit-keyframes moveUp
-            {
-	            from {left: 480px;} 
-	            to{left:20px;} 
-            }​
 		</style>
 		<script type="text/javascript">
 			$('document').ready(function(){
@@ -157,9 +141,9 @@
 			var app = angular.module("Blob",[]);
 			app.controller("c_Section",function($scope){
 				$scope.sections = [
-					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",isShowing:false,home:{left:'250px',top:'140px'}},
-					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,home:{left:'250px',top:'-60px'}},
-					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,home:{left:'250px',top:'320px'}}
+					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",isShowing:false,isHidden:false,home:{left:'250px',top:'140px'}},
+					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,isHidden:false,home:{left:'250px',top:'230px'}},
+					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,isHidden:false,home:{left:'250px',top:'320px'}}
 				];
 			
 				$scope.hoveredIndex = -1;
@@ -169,27 +153,61 @@
 				
 				$scope.selectedIndex = -1;
 				$scope.toggleView = function(ind){
+					/*
+					when I click on an item I want:
+						it to go to the top
+						show me its contents
+						hide the other items
+						show the back button
+					when I click it/back button again I want:
+						the back button to disappear
+						it to go back home
+						hide its contents
+						show the other items
+					
+					*/
 					var len = $scope.sections.length;
 
+					// it to go to the top
+					$('#'+$scope.sections[ind].region).animate({top:'0px'},300);
 					
-					$scope.selectedIndex = ind;
-					$('#'+$scope.sections[ind].region).animate({top:'0px'},500);
 					if(ind >= 0){
+						//show me its contents
 						$scope.sections[ind].isShowing = true;
+						
+						//hide the other items
 						for(var i=0; i<len; i++){
-							if (i != $scope.selectedIndex){$scope.sections[i].isShowing = false;}
+							if (i !== ind){
+								$scope.sections[i].isShowing = false;
+								$scope.sections[i].isHidden = true;
+							}
 						}
 						
 						if(ind == $scope.selectedIndex){
-							
-							for(var i=0;i<len;i++){
-								$('#'+$scope.sections[i].region).animate($scope.sections[i].home,500);
-								
+							//hide its contents
+							$scope.sections[ind].isShowing = false;
+							//it to go back home
+							$('#'+$scope.sections[ind].region).animate($scope.sections[ind].home,
+								{
+									duration:300,
+									complete:function(){
+										//alert("done");
+										//show the other items
+										for(var i=0; i<len; i++){
+											if(i!==ind){
+												$scope.sections[i].isHidden = false;
+											}
+										}
+										$scope.selectedIndex = -1;
+										
+									}
 								}
-							$scope.selectedIndex = -2;
+							);
+														
 						
 						}
 					}
+					$scope.selectedIndex = ind;
 					
 				}
 				
@@ -201,13 +219,13 @@
 			<div id="set" ng-controller="c_Section">
 				<div ng-repeat="s in sections"
 					 class="dot"
-					 ng-class="{hover: $index==hoveredIndex && !s.isShowing,hidden:selectedIndex!==$index && selectedIndex > -1}"
+					 ng-class="{hover: $index==hoveredIndex && !s.isShowing, hidden:s.isHidden}"
 					 id="{{s.region}}"
 					 ng-mouseenter="preview($index)"
 					 ng-mouseleave="preview(-1)"
 					 ng-click="toggleView($index)">
 						 <img src="ydldot.png"/>
-						 <span class="show-later">{{s.header}}, {{selectedIndex}}:{{s.isShowing}}</span>
+						 <span class="show-later">{{s.header}}, {{selectedIndex}}:{{'s.isShowing'+s.isShowing}}:{{'s.isHidden'+s.isHidden}}</span>
 						 <br/>
 						 <div class="show-even-later"
 						 id="{{s.region+'-show-even-later'}}"

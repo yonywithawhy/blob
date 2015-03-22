@@ -41,6 +41,7 @@
 				//border: 1px solid green;
 				line-height: 24px;
 				font-size: 24px;
+				white-space: nowrap;
 			}
 			.dot:hover{
 				opacity: 0.5;
@@ -49,18 +50,21 @@
 			.dot img {
 				width: 25px;
 			}
+			.dot .show-later{
+				display: none;
+			}
 			#dottop {
-				right:75px;
+				left:102px;
 				top:-60px;
 				
 			}
 			#dotleft {
-				right:250px;
+				left:-70px;
 				top:230px;
 				
 			}
 			#dotright {
-				right:-80px;
+				left:250px;
 				top:380px;
 				
 			}
@@ -76,10 +80,12 @@
 					
 
 					$(this).animate({left:distance},speed);
-					$('#dotleft').animate({right:'-50px'},speed);
-					$('#dotright').animate({right:'-50px',top:'320px'},speed);
-					$('#dottop').animate({right:'-50px',top:'140px'},speed);
+					$('#dotleft').animate({left:'250px'},speed);
+					$('#dotright').animate({left:'250px',top:'320px'},speed);
+					$('#dottop').animate({left:'250px',top:'140px'},speed);
 					$(this).css({cursor:'default'});
+					
+					$('.show-later').fadeIn(1000,function(){});
 					
 				});
 			});
@@ -91,6 +97,7 @@
 			<div id="set">
 				<div class="dot" id="dottop">
 					<img src="ydldot.png"/>
+					<span class="show-later">Who I Am</span>
 				</div>
 				<div id="ydl">
 					<img src="ydl.png"/><br/>
@@ -98,9 +105,11 @@
 				</div>
 				<div class="dot" id="dotleft">
 					<img src="ydldot.png"/>
+					<span class="show-later">What I Do</span>
 				</div>
 				<div class="dot" id="dotright">
 					<img src="ydldot.png"/>
+					<span class="show-later">How to Reach Me</span>
 				</div>
 			</div>
 		</div>

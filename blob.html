@@ -1,0 +1,114 @@
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+			#torso {
+				width:80%;
+				height: 500px;
+				position:relative;
+				margin: 0 auto;
+				//border: 1px solid black;
+				font-family: 'Gloria Hallelujah',serif;
+			}
+			#container>div {
+				//display: block;
+			}
+			#set {
+				position: absolute;
+				left: 33%;
+				top:100px;
+				width: 200px;
+				//border: 1px solid green;
+				display: none;
+			}
+			#ydl {
+				width: 100%;
+				height: auto;
+				//border: 1px solid red;
+			}
+			.dot{
+				width: auto;
+				height: 24px;
+				position: absolute;
+				//border: 1px solid green;
+				line-height: 24px;
+				font-size: 24px;
+			}
+			.dot:hover{
+				opacity: 0.5;
+				cursor: pointer;
+			}
+			.dot img {
+				width: 25px;
+			}
+			#dottop {
+				left: 98px;
+				top:-60px;
+				
+			}
+			#dotleft {
+				right:250px;
+				top:230px;
+				
+			}
+			#dotright {
+				left:260px;
+				top:380px;
+				
+			}
+		</style>
+		<script type="text/javascript">
+			$('document').ready(function(){
+				$('#set').fadeIn(2000,function(){
+					//do something else
+				});
+
+				$('#dottop').click(function(){
+					doBounce($(this), 2, '10px', 300, 'top');
+				})
+				$('#dotleft').click(function(){
+					doBounce($(this), 2, '10px', 300, 'right');
+				})
+				$('#dotright').click(function(){
+					doBounce($(this), 2, '10px', 300, 'left');
+				})
+				function doBounce(element, times, distance, speed, direction) {
+					if (direction == 'top') {
+						for(var i = 0; i < times; i++) {
+							element.animate({'top': '-='+distance}, speed).animate({'top': '+='+distance}, speed);
+						}	
+					} else if (direction == 'left') {
+						for(var i = 0; i < times; i++) {
+							element.animate({'left': '+='+distance}, speed).animate({'left': '-='+distance}, speed);
+						}
+					} else if (direction == 'right') {
+						for(var i = 0; i < times; i++) {
+							element.animate({'right': '+='+distance}, speed).animate({'right': '-='+distance}, speed);
+						}
+					}
+ 
+				}
+			});
+
+		</script>
+	</head>
+	<body onload="drawBlob()">
+		<div id="torso">
+			<div id="set">
+				<div class="dot" id="dottop">
+					<img src="ydldot.png"/>
+				</div>
+				<img src="ydl.png" id="ydl"/><br/>
+				<p>Yonatan David Laurence</p>
+				<div class="dot" id="dotleft">
+					<img src="ydldot.png"/>
+				</div>
+				<div class="dot" id="dotright">
+					<img src="ydldot.png"/>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

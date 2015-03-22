@@ -1,6 +1,14 @@
 <html>
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript">
+			if (!window.jQuery) {
+			  var jq = document.createElement('script'); jq.type = 'text/javascript';
+			  // Path to jquery.js file, eg. Google hosted version
+			  jq.src = 'jquery.1.11.2.js';
+			  document.getElementsByTagName('head')[0].appendChild(jq);
+			}
+		</script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
 		<style type="text/css">
@@ -43,10 +51,6 @@
 				font-size: 24px;
 				white-space: nowrap;
 			}
-			.dot:hover{
-				opacity: 0.5;
-				cursor: pointer;
-			}
 			.dot img {
 				width: 25px;
 			}
@@ -84,6 +88,9 @@
 					$('#dotright').animate({left:'250px',top:'320px'},speed);
 					$('#dottop').animate({left:'250px',top:'140px'},speed);
 					$(this).css({cursor:'default'});
+					
+					$('.dot').mouseenter(function(){$(this).css({cursor:'pointer',opacity:.5})})
+					.mouseleave(function(){$(this).css({cursor:'pointer',opacity:1})});
 					
 					$('.show-later').fadeIn(1000,function(){});
 					

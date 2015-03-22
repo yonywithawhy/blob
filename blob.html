@@ -3,9 +3,8 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript">
 			if (!window.jQuery) {
-			  var jq = document.createElement('script'); jq.type = 'text/javascript';
-			  // Path to jquery.js file, eg. Google hosted version
-			  jq.src = 'jquery.1.11.2.js';
+			  var jq = document.createElement('script');
+			  jq.type = 'text/javascript'; jq.src = 'jquery.1.11.2.js';
 			  document.getElementsByTagName('head')[0].appendChild(jq);
 			}
 		</script>
@@ -73,11 +72,30 @@
 				width: 25px;
 			}
 			.dot .show-later{
-				display: none;
+				opacity: 0;
+				transition: opacity linear 1s;
 			}
 			.dot.hover{
 				opacity: 0.5;
 				cursor: pointer;
+				top:0px;
+			}
+			.dot.already-shown{
+				opacity: 1;
+				transition: opacity linear .5s;
+			}
+			.dot.already-shown.hidden{
+				opacity: 0;
+				//top:0px;
+			}
+
+			.show-even-later{
+				opacity: 0;
+				//transition: opacity linear 1s;
+				border: 1px dotted black;
+			}
+			.show-even-later.selected{
+				opacity: 1;
 			}
 			#dottop {
 				left:102px;
@@ -94,6 +112,21 @@
 				top:380px;
 				
 			}
+			@keyframes moveUp
+            {
+	            from {left: 480px;} 
+	            to{left:20px;} 
+            }
+            @-moz-keyframes moveUp
+            {
+	            from {left: 480px;} 
+	            to{left:20px;} 
+            }
+            @-webkit-keyframes moveUp
+            {
+	            from {left: 480px;} 
+	            to{left:20px;} 
+            }​
 		</style>
 		<script type="text/javascript">
 			$('document').ready(function(){
@@ -110,8 +143,8 @@
 					$('#dottop').animate({left:'250px',top:'140px'},speed);
 					$(this).css({cursor:'default'});
 					
-					
-					$('.show-later').fadeIn(1000,function(){});
+					$('.dot').addClass('already-shown');
+					$('.show-later').animate({opacity:1},200);
 					$('#set').unbind('click.startup');
 					
 					//$scope.conditionalClass = true; 					
@@ -124,11 +157,11 @@
 			var app = angular.module("Blob",[]);
 			app.controller("c_Section",function($scope){
 				$scope.sections = [
-					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",showing:false},
-					{region:"dotleft",header:"What I Do",showing:false},
-					{region:"dotright",header:"How to Reach Me",showing:false}
+					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",isShowing:false,home:{left:'250px',top:'140px'}},
+					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,home:{left:'250px',top:'-60px'}},
+					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,home:{left:'250px',top:'320px'}}
 				];
-				
+			
 				$scope.hoveredIndex = -1;
 				$scope.preview = function(ind){
 					$scope.hoveredIndex = ind;
@@ -136,13 +169,28 @@
 				
 				$scope.selectedIndex = -1;
 				$scope.toggleView = function(ind){
-					//open with animation or close with animation
+					var len = $scope.sections.length;
+
+					
+					$scope.selectedIndex = ind;
+					$('#'+$scope.sections[ind].region).animate({top:'0px'},500);
 					if(ind >= 0){
-						alert("for ind "+ind+" old showing? "+$scope.sections[ind].showing);
-						$scope.sections[ind].showing = !$scope.sections[ind].showing;
-					}else{
-						alert("ind is "+ind);
+						$scope.sections[ind].isShowing = true;
+						for(var i=0; i<len; i++){
+							if (i != $scope.selectedIndex){$scope.sections[i].isShowing = false;}
+						}
+						
+						if(ind == $scope.selectedIndex){
+							
+							for(var i=0;i<len;i++){
+								$('#'+$scope.sections[i].region).animate($scope.sections[i].home,500);
+								
+								}
+							$scope.selectedIndex = -2;
+						
+						}
 					}
+					
 				}
 				
 			});
@@ -153,24 +201,24 @@
 			<div id="set" ng-controller="c_Section">
 				<div ng-repeat="s in sections"
 					 class="dot"
-					 ng-class="{hover: $index==hoveredIndex}"
+					 ng-class="{hover: $index==hoveredIndex && !s.isShowing,hidden:selectedIndex!==$index && selectedIndex > -1}"
 					 id="{{s.region}}"
 					 ng-mouseenter="preview($index)"
 					 ng-mouseleave="preview(-1)"
 					 ng-click="toggleView($index)">
 						 <img src="ydldot.png"/>
-						 <span class="show-later">{{s.header}}</span>
+						 <span class="show-later">{{s.header}}, {{selectedIndex}}:{{s.isShowing}}</span>
 						 <br/>
 						 <div class="show-even-later"
 						 id="{{s.region+'-show-even-later'}}"
-						 ng-show="{{s.showing}}"
+						 ng-class="{selected:s.isShowing}"
 						 >
 						 	{{s.content}}
 						 </div>
 				</div>
 				<div id="ydl">
 					<img src="ydl.png"/><br/>
-					<p>Yonatan David Laurence</p>
+					<p>Yonatan David Laurence {{selectedIndex}}</p>
 				</div>
 			</div>
 		</div>

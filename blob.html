@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="angularjs.1.2.17.min.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 		<style type="text/css">
 			code{
 				font-family: Monaco, monospace;
@@ -91,7 +92,9 @@
 			.show-even-later{
 				opacity: 0;
 				//transition: opacity linear 1s;
-				border: 1px dotted black;
+				//border: 1px dotted black;
+				font-size: 20px;
+				font-family: 'Poiret One',Verdana;
 			}
 			.show-even-later.selected{
 				opacity: 1;
@@ -141,7 +144,7 @@
 			var app = angular.module("Blob",[]);
 			app.controller("c_Section",function($scope){
 				$scope.sections = [
-					{region:"dottop",header:"Who I Am",content:"<code>asdasdsadsda  s </code>",isShowing:false,isHidden:false,home:{left:'250px',top:'140px'}},
+					{region:"dottop",header:"Who I Am",content:"This is me!",isShowing:false,isHidden:false,home:{left:'250px',top:'140px'}},
 					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,isHidden:false,home:{left:'250px',top:'230px'}},
 					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,isHidden:false,home:{left:'250px',top:'320px'}}
 				];
@@ -225,18 +228,18 @@
 					 ng-mouseleave="preview(-1)"
 					 ng-click="toggleView($index)">
 						 <img src="ydldot.png"/>
-						 <span class="show-later">{{s.header}}, {{selectedIndex}}:{{'s.isShowing'+s.isShowing}}:{{'s.isHidden'+s.isHidden}}</span>
+						 <span class="show-later">{{s.header}}</span>
 						 <br/>
 						 <div class="show-even-later"
 						 id="{{s.region+'-show-even-later'}}"
 						 ng-class="{selected:s.isShowing}"
 						 >
-						 	{{s.content}}
+						 	<p>{{s.content}}</p>
 						 </div>
 				</div>
 				<div id="ydl">
 					<img src="ydl.png"/><br/>
-					<p>Yonatan David Laurence {{selectedIndex}}</p>
+					<p>Yonatan David Laurence</p>
 				</div>
 			</div>
 		</div>

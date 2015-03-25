@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -10,6 +11,8 @@
 			}
 		</script>
 		<script type="text/javascript" src="angularjs.1.3.15.min.js"></script>
+		<script type="text/javascript" src="angular-route.1.3.15.min.js"></script>
+		<script type="text/javascript" src="angular-animate.1.3.15.min.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
@@ -115,6 +118,45 @@
 				top:380px;
 				
 			}
+			.my-slide-animation{
+				position: absolute;
+				left: 250px;
+				top: 30px;
+				width: 400px;
+				height: auto;
+				//display: none;
+			}
+			.my-slide-animation.ng-enter, .my-slide-animation.ng-leave {
+			  -webkit-transition:0.5s linear all;
+			  transition:0.5s linear all;
+			
+			  position:absolute;
+			  top:0;
+			  left:0;
+			  right:0;
+			  height:600px;
+			}
+			
+			.my-slide-animation.ng-enter {
+			  z-index:100;
+			  top:600px;
+			  opacity:0;
+			}
+			.my-slide-animation.ng-enter.ng-enter-active {
+			  top:0;
+			  opacity:1;
+			}
+			
+			.my-slide-animation.ng-leave {
+			  z-index:101;
+			  top:0;
+			  opacity:1;
+			}
+			.my-slide-animation.ng-leave.ng-leave-active {
+			  top:-600px;
+			  opacity:0;
+			}
+
 		</style>
 		<script type="text/javascript">
 			$('document').ready(function(){
@@ -133,23 +175,41 @@
 					
 					$('.dot').addClass('already-shown');
 					$('.show-later').animate({opacity:1},200);
-					$('#set').unbind('click.startup');
-					
-					//$scope.conditionalClass = true; 					
+					$('#set').unbind('click.startup');				
 				});
 				
 			});
 
 		</script>
 		<script type="text/javascript">
-			var app = angular.module("Blob",[]);
-			app.controller("c_Section",function($scope){
-				$scope.sections = [
-					{region:"dottop",header:"Who I Am",content:"This is me!",isShowing:false,isHidden:false,home:{left:'250px',top:'140px'}},
-					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,isHidden:false,home:{left:'250px',top:'230px'}},
-					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,isHidden:false,home:{left:'250px',top:'320px'}}
-				];
+			angular.module("Blob",['ngRoute', 'ngAnimate'])
+			.config(['$routeProvider', '$locationProvider',function($routeProvider, $locationProvider) {
+			    $routeProvider
+			      .when('/who', {
+			        templateUrl: 'who.html',
+			        //controller: 'WhoCtrl',
+			        //controllerAs: 'who'
+			      })
+			      .when('/what', {
+			        templateUrl: 'what.html',
+			        //controller: 'WhatCtrl',
+			        //controllerAs: 'what'
+			      })
+			      .when('/how', {
+			        templateUrl: 'how.html',
+			        //controller: 'HowCtrl',
+			        //controllerAs: 'how'
+			      });
 			
+			    $locationProvider.html5Mode(false);
+			}])
+			.controller("MainCtrl",['$scope','$location', function($scope,$location){
+				$scope.sections = [
+					{region:"dottop",header:"Who I Am",content:"This is me!",isShowing:false,isHidden:false,home:{left:'250px',top:'140px'},path:'/who'},
+					{region:"dotleft",header:"What I Do",content:"I do silly walks",isShowing:false,isHidden:false,home:{left:'250px',top:'230px'},path:'/what'},
+					{region:"dotright",header:"How to Reach Me",content:"Call me maybe?",isShowing:false,isHidden:false,home:{left:'250px',top:'320px'},path:'/how'}
+				];
+				$scope.location = $location;
 				$scope.hoveredIndex = -1;
 				$scope.preview = function(ind){
 					$scope.hoveredIndex = ind;
@@ -173,7 +233,11 @@
 					var len = $scope.sections.length;
 
 					// it to go to the top
-					$('#'+$scope.sections[ind].region).animate({top:'0px'},300);
+					if(!$scope.sections[ind].isShowing){
+						$location.path($scope.sections[ind].path);
+						//alert($location.path());
+						$('#'+$scope.sections[ind].region).animate({top:'0px'},300);
+					}
 					
 					if(ind >= 0){
 						//show me its contents
@@ -216,12 +280,12 @@
 					
 				}
 				
-			});
+			}]);
 		</script>
 	</head>
 	<body ng-app="Blob">
 		<div id="torso">
-			<div id="set" ng-controller="c_Section">
+			<div id="set" ng-controller="MainCtrl">
 				<div ng-repeat="s in sections"
 					 class="dot"
 					 ng-class="{hover: $index==hoveredIndex && !s.isShowing, hidden:s.isHidden}"
@@ -236,14 +300,16 @@
 						 id="{{s.region+'-show-even-later'}}"
 						 ng-class="{selected:s.isShowing}"
 						 >
-						 	<p>{{s.content}}</p>
 						 </div>
 				</div>
+				
 				<div id="ydl">
 					<img src="ydl.png"/><br/>
 					<p>Yonatan David Laurence</p>
 				</div>
+				<div ng-view class="my-slide-animation" id="content"></div>
 			</div>
+			
 		</div>
 	</body>
 </html>

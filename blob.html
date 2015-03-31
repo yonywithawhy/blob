@@ -81,8 +81,8 @@
 				transition: opacity linear 1s;
 			}
 			.dot.hover{
-				opacity: 0.5;
-				cursor: pointer;
+				//opacity: 0.5;
+				//cursor: pointer;
 				top:0px;
 			}
 			.dot.already-shown{
@@ -127,33 +127,35 @@
 				//display: none;
 			}
 			.my-slide-animation.ng-enter, .my-slide-animation.ng-leave {
-			  -webkit-transition:0.5s linear all;
-			  transition:0.5s linear all;
+			  -webkit-transition:0.3s linear all;
+			  transition:0.3s linear all;
 			
 			  position:absolute;
-			  top:0;
-			  left:0;
+			  top:100;
+			  left:250px;
 			  right:0;
 			  height:600px;
 			}
 			
 			.my-slide-animation.ng-enter {
-			  z-index:100;
-			  top:600px;
+			  //z-index:100;
+			  //top:600px;
 			  opacity:0;
+			  left:600px;
 			}
 			.my-slide-animation.ng-enter.ng-enter-active {
-			  top:0;
+			  //top:0;
 			  opacity:1;
 			}
 			
 			.my-slide-animation.ng-leave {
-			  z-index:101;
-			  top:0;
+			  //z-index:101;
+			  //top:0;
 			  opacity:1;
+			  left:250px;
 			}
 			.my-slide-animation.ng-leave.ng-leave-active {
-			  top:-600px;
+			  //top:-600px;
 			  opacity:0;
 			}
 
@@ -162,12 +164,12 @@
 			$('document').ready(function(){
 				$('#set').fadeIn(1000,function(){});
 				
-				$('#set').bind("click.startup",function(){
+				$('#ydl').bind("click.startup",function(){
 					var percent = .005;
 					var distance = (percent*$(this).parent().width())
 					var speed = 1000;
 
-					$(this).animate({left:distance},speed);
+					$('#set').animate({left:distance},speed);
 					$('#dotleft').animate({left:'250px'},speed);
 					$('#dotright').animate({left:'250px',top:'320px'},speed);
 					$('#dottop').animate({left:'250px',top:'140px'},speed);
@@ -175,7 +177,7 @@
 					
 					$('.dot').addClass('already-shown');
 					$('.show-later').animate({opacity:1},200);
-					$('#set').unbind('click.startup');				
+					$(this).unbind('click.startup');				
 				});
 				
 			});
@@ -185,6 +187,9 @@
 			angular.module("Blob",['ngRoute', 'ngAnimate'])
 			.config(['$routeProvider', '$locationProvider',function($routeProvider, $locationProvider) {
 			    $routeProvider
+			      .when('/', {
+			        template: '',
+			      })
 			      .when('/who', {
 			        templateUrl: 'who.html',
 			        //controller: 'WhoCtrl',
@@ -199,7 +204,8 @@
 			        templateUrl: 'how.html',
 			        //controller: 'HowCtrl',
 			        //controllerAs: 'how'
-			      });
+			      })
+			      .otherwise('/');
 			
 			    $locationProvider.html5Mode(false);
 			}])
@@ -237,6 +243,9 @@
 						$location.path($scope.sections[ind].path);
 						//alert($location.path());
 						$('#'+$scope.sections[ind].region).animate({top:'0px'},300);
+					}else{
+						//turning it off
+						$location.path('/');
 					}
 					
 					if(ind >= 0){
@@ -296,11 +305,11 @@
 						 <img src="ydldot.png"/>
 						 <span class="show-later">{{s.header}}</span>
 						 <br/>
-						 <div class="show-even-later"
+						 <!--<div class="show-even-later"
 						 id="{{s.region+'-show-even-later'}}"
 						 ng-class="{selected:s.isShowing}"
 						 >
-						 </div>
+						 </div>-->
 				</div>
 				
 				<div id="ydl">
